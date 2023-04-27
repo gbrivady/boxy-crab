@@ -63,7 +63,7 @@ macro_rules! const_grid_to_vec {
     };
 }
 
-fn build_hints(g: Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
+fn build_hints(g: &Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
     let mut row_hints: Vec<Vec<i32>> = Vec::new();
     let mut col_hints: Vec<Vec<i32>> = vec![Vec::new(); g[0].len()];
     let mut col_counts: Vec<i32> = vec![0; g[0].len()];
@@ -135,7 +135,8 @@ fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) {
 fn main() {
     // let (a, b): (Vec<Vec<i32>>, Vec<Vec<i32>>) = build_hints(const_grid_to_vec!(GRID_A));
     // println!("{a:#?}\n{b:#?}");
-    let (h_hints, v_hints) = build_hints(const_grid_to_vec!(GRID_DBG));
+    let grid_x: Grid = const_grid_to_vec!(GRID_DBG);
+    let (h_hints, v_hints) = build_hints(&grid_x);
     print!("\u{001b}[2J");
     draw_hints(h_hints, v_hints);
     // let grid_x: Grid = const_grid_to_vec!(GRID_X);
