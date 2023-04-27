@@ -106,7 +106,7 @@ fn build_hints(g: &Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
 }
 
 //unicode escape : \u{001b}
-fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) {
+fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) -> (u32, u32) {
     // horizontal hints takes 3 spaces in width, vertical ones 2 in height
     let width_hints = 3 * &h_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 2;
     let heigth_hints = 2 * &v_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 1;
@@ -129,7 +129,10 @@ fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) {
         print!("\u{001b}[1B\u{001b}[{}G", width_hints - 2);
     }
     //reset cursor for grid drawing purposes
-    print!("\u{001b}[{};{}f", heigth_hints + 2, width_hints + 2);
+    return (
+        heigth_hints.try_into().unwrap(),
+        width_hints.try_into().unwrap(),
+    );
 }
 
 fn main() {
@@ -138,7 +141,6 @@ fn main() {
     let grid_x: Grid = const_grid_to_vec!(GRID_DBG);
     let (h_hints, v_hints) = build_hints(&grid_x);
     print!("\u{001b}[2J");
-    draw_hints(h_hints, v_hints);
-    // let grid_x: Grid = const_grid_to_vec!(GRID_X);
-    // println!("{grid_x}");
+    let (x, y) = draw_hints(h_hints, v_hints);
+    print!("\u{001b}[{};{}f", x + 2, y + 2);
 }
