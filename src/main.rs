@@ -1,4 +1,23 @@
-type Grid = Vec<Vec<bool>>;
+use core::fmt;
+use std::ops;
+
+struct Grid(Vec<Vec<bool>>);
+
+impl ops::Deref for Grid {
+    type Target = Vec<Vec<bool>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl fmt::Display for Grid {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.iter().fold(Ok(()), |result, line| {
+            result.and_then(|_| write!(f, "{line:#?}"))
+        })
+    }
+}
 
 const GRID_A: [[bool; 5]; 5] = [
     [false, true, true, true, false],
@@ -18,7 +37,7 @@ const GRID_X: [[bool; 5]; 5] = [
 
 macro_rules! const_grid_to_vec {
     ( $x:expr ) => {
-        $x.iter().map(|x| x.to_vec()).collect::<Vec<_>>()
+        Grid($x.iter().map(|x| x.to_vec()).collect::<Vec<_>>())
     };
 }
 
@@ -67,4 +86,6 @@ fn build_hints(g: Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
 fn main() {
     let (a, b): (Vec<Vec<i32>>, Vec<Vec<i32>>) = build_hints(const_grid_to_vec!(GRID_A));
     println!("{a:#?}\n{b:#?}");
+    let grid_x: Grid = const_grid_to_vec!(GRID_X);
+    println!("{grid_x}");
 }
