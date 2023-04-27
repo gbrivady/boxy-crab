@@ -109,7 +109,7 @@ fn build_hints(g: &Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
 fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) {
     // horizontal hints takes 3 spaces in width, vertical ones 2 in height
     let width_hints = 3 * &h_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 2;
-    let heigth_hints = 2 * &v_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 2;
+    let heigth_hints = 2 * &v_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 1;
     //move cursor to just over the grid
     print!("\u{001b}[{};{}f", heigth_hints, width_hints + 2);
     for vec in v_hints.iter() {
