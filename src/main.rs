@@ -19,9 +19,9 @@ impl fmt::Display for Grid {
                     .fold(Ok(()), |result_inner, cell| {
                         result_inner.and_then(|_| {
                             if *cell {
-                                write!(f, "\u{2588}")
+                                write!(f, "\u{2588}\u{2588}")
                             } else {
-                                write!(f, " ")
+                                write!(f, "  ")
                             }
                         })
                     })
