@@ -1,5 +1,27 @@
 type Grid = Vec<Vec<bool>>;
 
+const GRID_A: [[bool; 5]; 5] = [
+    [false, true, true, true, false],
+    [false, true, false, true, false],
+    [false, true, true, true, false],
+    [false, true, false, true, false],
+    [false, true, false, true, false],
+];
+
+const GRID_X: [[bool; 5]; 5] = [
+    [true, false, false, false, true],
+    [false, true, false, true, false],
+    [false, false, true, false, false],
+    [false, true, false, true, false],
+    [true, false, false, false, false],
+];
+
+macro_rules! const_grid_to_vec {
+    ( $x:expr ) => {
+        $x.iter().map(|x| x.to_vec()).collect::<Vec<_>>()
+    };
+}
+
 fn build_hints(g: Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
     let mut row_hints: Vec<Vec<i32>> = Vec::new();
     let mut col_hints: Vec<Vec<i32>> = vec![Vec::new(); g[0].len()];
@@ -43,8 +65,6 @@ fn build_hints(g: Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
 }
 
 fn main() {
-    let (a, b) = build_hints(vec![
-        vec![true, true, false, true, true, false],
-        vec![true, true, false, false, false, true]]);
-    println!("{:#?}\n{:#?}", a, b);
+    let (a, b): (Vec<Vec<i32>>, Vec<Vec<i32>>) = build_hints(const_grid_to_vec!(GRID_A));
+    println!("{a:#?}\n{b:#?}");
 }
