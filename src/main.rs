@@ -14,7 +14,19 @@ impl ops::Deref for Grid {
 impl fmt::Display for Grid {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.iter().fold(Ok(()), |result, line| {
-            result.and_then(|_| write!(f, "{line:#?}"))
+            result.and_then(|_| {
+                line.iter()
+                    .fold(Ok(()), |result_inner, cell| {
+                        result_inner.and_then(|_| {
+                            if *cell {
+                                write!(f, "\u{2588}")
+                            } else {
+                                write!(f, " ")
+                            }
+                        })
+                    })
+                    .and_then(|_| write!(f, "\n"))
+            })
         })
     }
 }
@@ -32,7 +44,7 @@ const GRID_X: [[bool; 5]; 5] = [
     [false, true, false, true, false],
     [false, false, true, false, false],
     [false, true, false, true, false],
-    [true, false, false, false, false],
+    [true, false, false, false, true],
 ];
 
 macro_rules! const_grid_to_vec {
@@ -84,8 +96,8 @@ fn build_hints(g: Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
 }
 
 fn main() {
-    let (a, b): (Vec<Vec<i32>>, Vec<Vec<i32>>) = build_hints(const_grid_to_vec!(GRID_A));
-    println!("{a:#?}\n{b:#?}");
+    // let (a, b): (Vec<Vec<i32>>, Vec<Vec<i32>>) = build_hints(const_grid_to_vec!(GRID_A));
+    // println!("{a:#?}\n{b:#?}");
     let grid_x: Grid = const_grid_to_vec!(GRID_X);
     println!("{grid_x}");
 }
