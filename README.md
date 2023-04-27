@@ -4,7 +4,8 @@ A game of picross implemented in `rust`.
 
 ## Features
 
-None so far.
+- Print the hint from a given grid
+- Display a given grid surrounded by the hints
 
 ## Coming soon
 
