@@ -51,7 +51,7 @@ const GRID_X: [[bool; 5]; 5] = [
 
 const GRID_DBG: [[bool; 5]; 5] = [
     [true, true, true, true, true],
-    [true, false, true, false, true],
+    [true, false, true, false, false],
     [true, true, false, false, true],
     [true, true, false, true, false],
     [true, true, true, true, true],
@@ -143,4 +143,6 @@ fn main() {
     print!("\u{001b}[2J");
     let (x, y) = draw_hints(h_hints, v_hints);
     print!("\u{001b}[{};{}f", x + 2, y + 2);
+    print!("{grid_x}");
+    print!("\u{001b}[2B");
 }
