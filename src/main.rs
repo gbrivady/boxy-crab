@@ -1,4 +1,5 @@
 use core::fmt;
+use std::cmp;
 use std::ops;
 
 struct Grid(Vec<Vec<bool>>);
@@ -45,6 +46,14 @@ const GRID_X: [[bool; 5]; 5] = [
     [false, false, true, false, false],
     [false, true, false, true, false],
     [true, false, false, false, true],
+];
+
+const GRID_DBG: [[bool; 5]; 5] = [
+    [true, true, true, true, true],
+    [true, false, true, false, true],
+    [true, true, false, false, true],
+    [true, true, false, true, false],
+    [true, true, true, true, true],
 ];
 
 macro_rules! const_grid_to_vec {
@@ -95,9 +104,39 @@ fn build_hints(g: Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
     return (row_hints, col_hints);
 }
 
+//unicode escape : \u{001b}
+fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) {
+    // horizontal hints takes 3 spaces in width, vertical ones 2 in height
+    let width_hints = 3 * &h_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 2;
+    let heigth_hints = 2 * &v_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 2;
+    //move cursor to just over the grid
+    print!("\u{001b}[{};{}f", heigth_hints, width_hints + 2);
+    for vec in v_hints.iter() {
+        for hint in vec.iter().rev() {
+            //print char, move two lines up, 2 columns left
+            print!("{hint:>2}\u{001b}[2A\u{001b}[2D");
+        }
+        //at end of column, go to next one
+        print!("\u{001b}[{}B\u{001b}[2C", 2 * vec.len());
+    }
+    //move cursor to just left of the grid
+    print!("\u{001b}[{};{}f", heigth_hints + 2, width_hints - 2);
+    for vec in h_hints.iter() {
+        for hint in vec.iter().rev() {
+            print!("{hint:>2}\u{001b}[5D");
+        }
+        print!("\u{001b}[1B\u{001b}[{}G", width_hints - 2);
+    }
+    //reset cursor for grid drawing purposes
+    print!("\u{001b}[{};{}f", heigth_hints + 2, width_hints + 2);
+}
+
 fn main() {
     // let (a, b): (Vec<Vec<i32>>, Vec<Vec<i32>>) = build_hints(const_grid_to_vec!(GRID_A));
     // println!("{a:#?}\n{b:#?}");
-    let grid_x: Grid = const_grid_to_vec!(GRID_X);
-    println!("{grid_x}");
+    let (h_hints, v_hints) = build_hints(const_grid_to_vec!(GRID_DBG));
+    print!("\u{001b}[2J");
+    draw_hints(h_hints, v_hints);
+    // let grid_x: Grid = const_grid_to_vec!(GRID_X);
+    // println!("{grid_x}");
 }
