@@ -14,6 +14,7 @@ impl ops::Deref for Grid {
 
 impl fmt::Display for Grid {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let move_back_x = 2 * self[0].len();
         self.iter().fold(Ok(()), |result, line| {
             result.and_then(|_| {
                 line.iter()
@@ -26,7 +27,7 @@ impl fmt::Display for Grid {
                             }
                         })
                     })
-                    .and_then(|_| write!(f, "\n"))
+                    .and_then(|_| write!(f, "\u{001b}[{move_back_x}D\u{001b}[1B"))
             })
         })
     }
