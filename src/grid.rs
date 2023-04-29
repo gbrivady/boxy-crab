@@ -32,46 +32,72 @@ impl fmt::Display for Grid {
     }
 }
 
-pub fn build_hints(g: &Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
-    let mut row_hints: Vec<Vec<i32>> = Vec::new();
-    let mut col_hints: Vec<Vec<i32>> = vec![Vec::new(); g[0].len()];
-    let mut col_counts: Vec<i32> = vec![0; g[0].len()];
-    for row in g.iter() {
-        let mut cur_hint: Vec<i32> = Vec::new();
-        let mut cur_count: i32 = 0;
-        for cell in row.iter().enumerate() {
-            match (cell, cur_count) {
-                ((j, &true), _) => {
-                    cur_count += 1;
-                    col_counts[j] += 1;
-                }
-                ((j, &false), 0) => {
-                    if col_counts[j] != 0 {
-                        col_hints[j].push(col_counts[j]);
-                        col_counts[j] = 0;
+impl Grid {
+    pub fn build_hints(&self) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
+        let mut row_hints: Vec<Vec<i32>> = Vec::new();
+        let mut col_hints: Vec<Vec<i32>> = vec![Vec::new(); self[0].len()];
+        let mut col_counts: Vec<i32> = vec![0; self[0].len()];
+        for row in self.iter() {
+            let mut cur_hint: Vec<i32> = Vec::new();
+            let mut cur_count: i32 = 0;
+            for cell in row.iter().enumerate() {
+                match (cell, cur_count) {
+                    ((j, &true), _) => {
+                        cur_count += 1;
+                        col_counts[j] += 1;
                     }
-                }
-                ((j, &false), _) => {
-                    cur_hint.push(cur_count);
-                    cur_count = 0;
-                    if col_counts[j] != 0 {
-                        col_hints[j].push(col_counts[j]);
-                        col_counts[j] = 0;
+                    ((j, &false), 0) => {
+                        if col_counts[j] != 0 {
+                            col_hints[j].push(col_counts[j]);
+                            col_counts[j] = 0;
+                        }
+                    }
+                    ((j, &false), _) => {
+                        cur_hint.push(cur_count);
+                        cur_count = 0;
+                        if col_counts[j] != 0 {
+                            col_hints[j].push(col_counts[j]);
+                            col_counts[j] = 0;
+                        }
                     }
                 }
             }
+            if cur_count != 0 {
+                cur_hint.push(cur_count)
+            }
+            row_hints.push(cur_hint);
         }
-        if cur_count != 0 {
-            cur_hint.push(cur_count)
+        for (j, count) in col_counts.iter().enumerate() {
+            if *count != 0 {
+                col_hints[j].push(*count);
+            }
         }
-        row_hints.push(cur_hint);
+        return (row_hints, col_hints);
     }
-    for (j, count) in col_counts.iter().enumerate() {
-        if *count != 0 {
-            col_hints[j].push(*count);
-        }
-    }
-    return (row_hints, col_hints);
+
+    pub const A: [[bool; 5]; 5] = [
+        [false, true, true, true, false],
+        [false, true, false, true, false],
+        [false, true, true, true, false],
+        [false, true, false, true, false],
+        [false, true, false, true, false],
+    ];
+
+    pub const X: [[bool; 5]; 5] = [
+        [true, false, false, false, true],
+        [false, true, false, true, false],
+        [false, false, true, false, false],
+        [false, true, false, true, false],
+        [true, false, false, false, true],
+    ];
+
+    pub const DBG: [[bool; 5]; 5] = [
+        [true, true, true, true, true],
+        [true, false, true, false, false],
+        [true, true, false, false, true],
+        [true, true, false, true, false],
+        [true, true, true, true, true],
+    ];
 }
 
 #[macro_export]
@@ -80,27 +106,3 @@ macro_rules! const_grid_to_vec {
         Grid($x.iter().map(|x| x.to_vec()).collect::<Vec<_>>())
     };
 }
-
-pub const GRID_A: [[bool; 5]; 5] = [
-    [false, true, true, true, false],
-    [false, true, false, true, false],
-    [false, true, true, true, false],
-    [false, true, false, true, false],
-    [false, true, false, true, false],
-];
-
-pub const GRID_X: [[bool; 5]; 5] = [
-    [true, false, false, false, true],
-    [false, true, false, true, false],
-    [false, false, true, false, false],
-    [false, true, false, true, false],
-    [true, false, false, false, true],
-];
-
-pub const GRID_DBG: [[bool; 5]; 5] = [
-    [true, true, true, true, true],
-    [true, false, true, false, false],
-    [true, true, false, false, true],
-    [true, true, false, true, false],
-    [true, true, true, true, true],
-];
