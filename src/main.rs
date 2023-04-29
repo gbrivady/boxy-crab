@@ -1,7 +1,7 @@
-use std::cmp;
-
 mod grid;
 use grid::Grid;
+
+mod tui;
 
 fn build_hints(g: &Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
     let mut row_hints: Vec<Vec<i32>> = Vec::new();
@@ -45,43 +45,13 @@ fn build_hints(g: &Grid) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
     return (row_hints, col_hints);
 }
 
-//unicode escape : \u{001b}
-fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) -> (u32, u32) {
-    // horizontal hints takes 3 spaces in width, vertical ones 2 in height
-    let width_hints = 3 * &h_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 2;
-    let heigth_hints = 2 * &v_hints.iter().fold(0, |acc, vec| cmp::max(acc, vec.len())) + 1;
-    //move cursor to just over the grid
-    print!("\u{001b}[{};{}f", heigth_hints, width_hints + 2);
-    for vec in v_hints.iter() {
-        for hint in vec.iter().rev() {
-            //print char, move two lines up, 2 columns left
-            print!("{hint:>2}\u{001b}[2A\u{001b}[2D");
-        }
-        //at end of column, go to next one
-        print!("\u{001b}[{}B\u{001b}[2C", 2 * vec.len());
-    }
-    //move cursor to just left of the grid
-    print!("\u{001b}[{};{}f", heigth_hints + 2, width_hints - 2);
-    for vec in h_hints.iter() {
-        for hint in vec.iter().rev() {
-            print!("{hint:>2}\u{001b}[5D");
-        }
-        print!("\u{001b}[1B\u{001b}[{}G", width_hints - 2);
-    }
-    //reset cursor for grid drawing purposes
-    return (
-        heigth_hints.try_into().unwrap(),
-        width_hints.try_into().unwrap(),
-    );
-}
-
 fn main() {
     // let (a, b): (Vec<Vec<i32>>, Vec<Vec<i32>>) = build_hints(const_grid_to_vec!(GRID_A));
     // println!("{a:#?}\n{b:#?}");
     let grid_x: Grid = const_grid_to_vec!(grid::GRID_DBG);
     let (h_hints, v_hints) = build_hints(&grid_x);
     print!("\u{001b}[2J");
-    let (x, y) = draw_hints(h_hints, v_hints);
+    let (x, y) = tui::draw_hints(h_hints, v_hints);
     print!("\u{001b}[{};{}f", x + 2, y + 2);
     print!("{grid_x}");
     print!("\u{001b}[2B");
