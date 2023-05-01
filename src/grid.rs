@@ -1,4 +1,5 @@
 use core::fmt;
+use std::cmp;
 use std::ops;
 
 #[repr(u8)]
@@ -39,6 +40,22 @@ impl fmt::Display for Grid {
         })
     }
 }
+
+impl cmp::PartialEq for Grid {
+    fn eq(&self, other: &Self) -> bool {
+        self.iter().enumerate().fold(true, |acc, (i, line)| {
+            acc && line.iter().enumerate().fold(true, |acc, (j, cell)| {
+                acc && match (*cell, other[i][j]) {
+                    (Cell::FULL, Cell::FULL) => true,
+                    (Cell::FULL, _) => false,
+                    (_, Cell::FULL) => false,
+                    (_, _) => true,
+                }
+            })
+        })
+    }
+}
+impl cmp::Eq for Grid {}
 
 impl Grid {
     pub fn build_hints(&self) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
