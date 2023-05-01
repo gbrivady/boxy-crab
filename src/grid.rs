@@ -1,10 +1,19 @@
 use core::fmt;
 use std::ops;
 
-pub struct Grid(pub Vec<Vec<bool>>);
+#[repr(u8)]
+#[derive(Clone, Copy)]
+pub enum Cell {
+    FULL = 1,
+    EMPTY = 0,
+    CROSS = 2,
+    DOT = 3,
+}
+
+pub struct Grid(pub Vec<Vec<Cell>>);
 
 impl ops::Deref for Grid {
-    type Target = Vec<Vec<bool>>;
+    type Target = Vec<Vec<Cell>>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -18,12 +27,11 @@ impl fmt::Display for Grid {
             result.and_then(|_| {
                 line.iter()
                     .fold(Ok(()), |result_inner, cell| {
-                        result_inner.and_then(|_| {
-                            if *cell {
-                                write!(f, "\u{2588}\u{2588}")
-                            } else {
-                                write!(f, "  ")
-                            }
+                        result_inner.and_then(|_| match *cell {
+                            Cell::FULL => write!(f, "\u{2588}\u{2588}"),
+                            Cell::EMPTY => write!(f, "  "),
+                            Cell::CROSS => write!(f, "\u{2573} "),
+                            Cell::DOT => write!(f, "\u{25AA}"),
                         })
                     })
                     .and_then(|_| write!(f, "\u{001b}[{move_back_x}D\u{001b}[1B"))
@@ -42,17 +50,17 @@ impl Grid {
             let mut cur_count: i32 = 0;
             for cell in row.iter().enumerate() {
                 match (cell, cur_count) {
-                    ((j, &true), _) => {
+                    ((j, Cell::EMPTY), _) => {
                         cur_count += 1;
                         col_counts[j] += 1;
                     }
-                    ((j, &false), 0) => {
+                    ((j, _), 0) => {
                         if col_counts[j] != 0 {
                             col_hints[j].push(col_counts[j]);
                             col_counts[j] = 0;
                         }
                     }
-                    ((j, &false), _) => {
+                    ((j, _), _) => {
                         cur_hint.push(cur_count);
                         cur_count = 0;
                         if col_counts[j] != 0 {
@@ -75,28 +83,82 @@ impl Grid {
         return (row_hints, col_hints);
     }
 
-    pub const A: [[bool; 5]; 5] = [
-        [false, true, true, true, false],
-        [false, true, false, true, false],
-        [false, true, true, true, false],
-        [false, true, false, true, false],
-        [false, true, false, true, false],
+    pub const A: [[Cell; 5]; 5] = [
+        [Cell::EMPTY, Cell::FULL, Cell::FULL, Cell::FULL, Cell::EMPTY],
+        [
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+        ],
+        [Cell::EMPTY, Cell::FULL, Cell::FULL, Cell::FULL, Cell::EMPTY],
+        [
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+        ],
+        [
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+        ],
     ];
 
-    pub const X: [[bool; 5]; 5] = [
-        [true, false, false, false, true],
-        [false, true, false, true, false],
-        [false, false, true, false, false],
-        [false, true, false, true, false],
-        [true, false, false, false, true],
+    pub const X: [[Cell; 5]; 5] = [
+        [
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::EMPTY,
+            Cell::EMPTY,
+            Cell::FULL,
+        ],
+        [
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+        ],
+        [
+            Cell::EMPTY,
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::EMPTY,
+        ],
+        [
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+        ],
+        [
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::EMPTY,
+            Cell::EMPTY,
+            Cell::FULL,
+        ],
     ];
 
-    pub const DBG: [[bool; 5]; 5] = [
-        [true, true, true, true, true],
-        [true, false, true, false, false],
-        [true, true, false, false, true],
-        [true, true, false, true, false],
-        [true, true, true, true, true],
+    pub const DBG: [[Cell; 5]; 5] = [
+        [Cell::FULL, Cell::FULL, Cell::FULL, Cell::FULL, Cell::FULL],
+        [
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::FULL,
+            Cell::EMPTY,
+            Cell::EMPTY,
+        ],
+        [Cell::FULL, Cell::FULL, Cell::EMPTY, Cell::EMPTY, Cell::FULL],
+        [Cell::FULL, Cell::FULL, Cell::EMPTY, Cell::FULL, Cell::EMPTY],
+        [Cell::FULL, Cell::FULL, Cell::FULL, Cell::FULL, Cell::FULL],
     ];
 }
 
