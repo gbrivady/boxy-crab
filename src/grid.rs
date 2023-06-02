@@ -11,6 +11,17 @@ pub enum Cell {
     DOT = 3,
 }
 
+impl fmt::Display for Cell {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match *self {
+            Cell::FULL => write!(f, "\u{2588}\u{2588}"),
+            Cell::EMPTY => write!(f, "  "),
+            Cell::CROSS => write!(f, "\u{2573} "),
+            Cell::DOT => write!(f, "\u{25AA} "),
+        }
+    }
+}
+
 pub struct Grid(pub Vec<Vec<Cell>>);
 
 impl ops::Deref for Grid {
@@ -28,12 +39,7 @@ impl fmt::Display for Grid {
             result.and_then(|_| {
                 line.iter()
                     .fold(Ok(()), |result_inner, cell| {
-                        result_inner.and_then(|_| match *cell {
-                            Cell::FULL => write!(f, "\u{2588}\u{2588}"),
-                            Cell::EMPTY => write!(f, "  "),
-                            Cell::CROSS => write!(f, "\u{2573} "),
-                            Cell::DOT => write!(f, "\u{25AA}"),
-                        })
+                        result_inner.and_then(|_| write!(f, "{cell}"))
                     })
                     .and_then(|_| write!(f, "\u{001b}[{move_back_x}D\u{001b}[1B"))
             })
