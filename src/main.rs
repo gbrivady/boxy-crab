@@ -7,7 +7,7 @@ use std::{
 mod grid;
 use grid::Grid;
 
-mod tui;
+mod tdisplay;
 
 use crossterm::{
     cursor,
@@ -23,7 +23,7 @@ fn main() {
     let grid_x: Grid = const_grid_to_vec!(Grid::DBG);
     let (h_hints, v_hints) = grid_x.build_hints();
     print!("\u{001b}[2J");
-    let (x, y) = tui::draw_hints(h_hints, v_hints);
+    let (x, y) = tdisplay::draw_hints(h_hints, v_hints);
     print!("\u{001b}[{};{}f", x + 2, y + 2);
     print!("{grid_x}");
     print!("\u{001b}[2B");
@@ -31,7 +31,7 @@ fn main() {
 
     io::stdout().flush().expect("Unable to flush stdout");
     enable_raw_mode().expect("Unable to enable raw mode");
-    tui::read_input();
+    tdisplay::read_input();
     disable_raw_mode().expect("Unable to disable raw mode");
     io::stdout().flush().expect("Unable to flush stdout");
 
