@@ -14,6 +14,23 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode},
     ExecutableCommand,
 };
+pub enum Move {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    NONE,
+}
+
+fn legal_move(input: Move, cursor: (usize, usize), grid_dim: (usize, usize)) -> bool {
+    match input {
+        Move::UP => cursor.0 > 0,
+        Move::DOWN => cursor.0 + 1 < grid_dim.0,
+        Move::LEFT => cursor.1 > 0,
+        Move::RIGHT => cursor.1 + 1 < grid_dim.1,
+        _ => true,
+    }
+}
 
 fn main() {
     print!("\u{001b}[?1049h"); //Go to secondary screen
