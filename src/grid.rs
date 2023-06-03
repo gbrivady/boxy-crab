@@ -73,7 +73,7 @@ impl Grid {
             let mut cur_count: i32 = 0;
             for cell in row.iter().enumerate() {
                 match (cell, cur_count) {
-                    ((j, Cell::EMPTY), _) => {
+                    ((j, Cell::FULL), _) => {
                         cur_count += 1;
                         col_counts[j] += 1;
                     }
