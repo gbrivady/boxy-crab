@@ -54,6 +54,7 @@ fn main() {
     let mut buffer: [u8; 1] = [0u8; 1];
     let mut handle: std::io::Stdin = io::stdin();
     let mut input: Move;
+    let output_line: u32 = y + 4 + grid_dim.0 as u32;
 
     // 2 - Game
     let mut cursor: (usize, usize) = (0, 0);
@@ -71,7 +72,7 @@ fn main() {
             .expect("Failed to read user input");
         input = match buffer[0] as char {
             'q' => {
-                println!("\u{001b}[;39;39mQuitting...");
+                tdisplay::output_message("\u{001b}[;39;39mQuitting...", output_line);
                 break;
             }
             'w' => {
