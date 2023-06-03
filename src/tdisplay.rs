@@ -47,3 +47,10 @@ pub fn update_cursor(input: Move, old: Cell, new: Cell) -> () {
     print!("\u{001b}[;91;41m{new}\u{001b}[2D");
     print!("\u{001b}[?25l");
 }
+
+pub fn output_message(msg: &str, output_line: u32) -> () {
+    print!("\u{001b} 7");
+    print!("\u{001b}[{output_line};0H");
+    print!("{msg}");
+    print!("\u{001b} 8");
+}
