@@ -107,6 +107,7 @@ fn main() {
             _ => continue,
         };
         new_cell = user_grid[cursor.0][cursor.1];
+        tdisplay::update_cursor(input, old_cell, new_cell);
         io::stdout().flush().expect("Unable to flush stdout");
     }
     //Move cursor:
