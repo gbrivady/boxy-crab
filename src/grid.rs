@@ -3,7 +3,7 @@ use std::cmp;
 use std::ops;
 
 #[repr(u8)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, cmp::PartialEq)]
 pub enum Cell {
     FULL = 1,
     EMPTY = 0,
@@ -22,6 +22,18 @@ impl fmt::Display for Cell {
     }
 }
 
+impl Cell {
+    pub fn switch_to(&mut self, value: Cell) {
+        *self = {
+            if *self == value {
+                Cell::EMPTY
+            } else {
+                value
+            }
+        }
+    }
+}
+
 pub struct Grid(pub Vec<Vec<Cell>>);
 
 impl ops::Deref for Grid {
@@ -29,6 +41,12 @@ impl ops::Deref for Grid {
 
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+impl ops::DerefMut for Grid {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.0.as_mut()
     }
 }
 
