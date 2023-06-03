@@ -1,6 +1,6 @@
 use core::time;
 use std::{
-    io::{self, stdout, Read, Write},
+    io::{self, Read, Write},
     thread,
 };
 
@@ -9,11 +9,7 @@ use grid::Grid;
 
 mod tdisplay;
 
-use crossterm::{
-    cursor,
-    terminal::{disable_raw_mode, enable_raw_mode},
-    ExecutableCommand,
-};
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 pub enum Move {
     UP,
     DOWN,
