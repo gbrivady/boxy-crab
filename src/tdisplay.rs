@@ -3,28 +3,8 @@ use std::{
     io::{self, Read, Write},
 };
 
-pub fn read_input() -> () {
-    let mut buffer: [u8; 1] = [0u8; 1];
-    let mut handle: std::io::Stdin = io::stdin();
-    loop {
-        handle
-            .read_exact(&mut buffer)
-            .expect("Failed to read user input");
-        print!("\u{001b}[2K\r");
-        match buffer[0] as char {
-            'q' => {
-                println!("Quitting...");
-                break;
-            }
-            'w' => print!("Up"),
-            'a' => print!("Left"),
-            's' => print!("Right"),
-            'd' => print!("Down"),
-            _ => (),
-        }
-        io::stdout().flush().expect("Unable to flush stdout");
-    }
-}
+use crate::grid::Cell;
+use crate::Move;
 
 pub fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) -> (u32, u32) {
     // horizontal hints takes 3 spaces in width, vertical ones 2 in height
