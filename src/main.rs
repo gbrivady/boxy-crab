@@ -72,7 +72,7 @@ fn main() {
             .expect("Failed to read user input");
         input = match buffer[0] as char {
             'q' => {
-                tdisplay::output_message("\u{001b}[;39;39mQuitting...", output_line);
+                tdisplay::output_message("Quitting...", output_line);
                 break;
             }
             'w' => {
@@ -125,12 +125,9 @@ fn main() {
             }
             ' ' => {
                 if user_grid == grid {
-                    tdisplay::output_message("\u{001b}[;39;39mGrid is correct !", output_line);
+                    tdisplay::output_message("Grid is correct !", output_line);
                 } else {
-                    tdisplay::output_message(
-                        "\u{001b}[;39;39mThere is atleast one mistake !",
-                        output_line,
-                    );
+                    tdisplay::output_message("There is atleast one mistake !", output_line);
                 }
                 Move::NONE
             }

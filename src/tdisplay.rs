@@ -34,7 +34,7 @@ pub fn draw_hints(h_hints: Vec<Vec<i32>>, v_hints: Vec<Vec<i32>>) -> (u32, u32) 
 
 pub fn update_cursor(input: Move, old: Cell, new: Cell) -> () {
     //reset old cell to normal
-    print!("\u{001b}[;39;49m{old}\u{001b}[2D");
+    print!("{old}\u{001b}[2D");
 
     // move cursor
     match input {
@@ -44,7 +44,7 @@ pub fn update_cursor(input: Move, old: Cell, new: Cell) -> () {
         Move::RIGHT => print!("\u{001b}[2C"),
         _ => (),
     }
-    print!("\u{001b}[;91;41m{new}\u{001b}[2D");
+    print!("\u{001b}[;91;41m{new}\u{001b}[2D\u{001b}[;39;49m");
     print!("\u{001b}[?25l");
 }
 
