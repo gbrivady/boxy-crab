@@ -123,6 +123,17 @@ fn main() {
                 user_grid[cursor.0][cursor.1].switch_to(grid::Cell::DOT);
                 Move::NONE
             }
+            ' ' => {
+                if user_grid == grid {
+                    tdisplay::output_message("\u{001b}[;39;39mGrid is correct !", output_line);
+                } else {
+                    tdisplay::output_message(
+                        "\u{001b}[;39;39mThere is atleast one mistake !",
+                        output_line,
+                    );
+                }
+                Move::NONE
+            }
             _ => continue,
         };
         new_cell = user_grid[cursor.0][cursor.1];
