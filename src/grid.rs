@@ -105,7 +105,9 @@ impl Grid {
         }
         return (row_hints, col_hints);
     }
-
+    pub fn make_empty(height: usize, width: usize) -> Grid {
+        Grid(vec![vec![Cell::EMPTY; width]; height])
+    }
     pub const A: [[Cell; 5]; 5] = [
         [Cell::EMPTY, Cell::FULL, Cell::FULL, Cell::FULL, Cell::EMPTY],
         [
