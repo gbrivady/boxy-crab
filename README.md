@@ -7,6 +7,7 @@ A game of picross implemented in `rust`.
 - Print the hints from a given grid
 - Can interact and modify a user grid, see Keybinds.
 - Toggle for cell filling
+- Check that there are no mistakes
 
 ## Todo
 
@@ -28,3 +29,5 @@ A game of picross implemented in `rust`.
 | E   | Toggle Fill |
 | X   | Toggle Cross |
 | F   | Toggle Dot |
+| Space | Check grid |
+| Q     | Quit game |
