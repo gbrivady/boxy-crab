@@ -62,7 +62,9 @@ fn main() {
     print!("\u{001b}[{}A", grid_dim.0);
     let mut old_cell: grid::Cell;
     let mut new_cell: grid::Cell = user_grid[cursor.0][cursor.1];
+    io::stdout().flush().expect("Unable to flush stdout");
     loop {
+        old_cell = new_cell;
         handle
             .read_exact(&mut buffer)
             .expect("Failed to read user input");
@@ -103,7 +105,22 @@ fn main() {
                     Move::NONE
                 }
             }
-    tdisplay::read_input();
+            'x' => {
+                user_grid[cursor.0][cursor.1].switch_to(grid::Cell::CROSS);
+                Move::NONE
+            }
+            'e' => {
+                user_grid[cursor.0][cursor.1].switch_to(grid::Cell::FULL);
+                Move::NONE
+            }
+            'r' => {
+                user_grid[cursor.0][cursor.1].switch_to(grid::Cell::EMPTY);
+                Move::NONE
+            }
+            'f' => {
+                user_grid[cursor.0][cursor.1].switch_to(grid::Cell::DOT);
+                Move::NONE
+            }
             _ => continue,
         };
         new_cell = user_grid[cursor.0][cursor.1];
